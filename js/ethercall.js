@@ -287,7 +287,7 @@ loan = TruffleContract(data);
 
 loan.setProvider(web3Provider);
 
-loan = loan.at("0x31c3a1215f9f67d9b8bf975ae0fbf24dc3220b0d");
+loan = loan.at("0xda1dec4d71d4b584bb0106a1e98506c40e2a6f01");
 
 loan.nextPaymentDue().then(function(nextPaymentDue) {
   return loan.calcInterest().then(function(interest) {
@@ -299,3 +299,22 @@ loan.nextPaymentDue().then(function(nextPaymentDue) {
     }
   });
 });
+
+var nextPayment = new Date()
+var interest = 1
+
+function onDataReady(data){
+  nextPayment = data.nextPayment
+  interest = datal.interest
+}
+
+function getEther(){
+  return {
+    nextPayment: nextPayment,
+    interest: interest
+  }
+}
+
+module.exports = {
+  getEther: getEther
+}

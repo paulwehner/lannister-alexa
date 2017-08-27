@@ -15,7 +15,8 @@
   "license": "",
   "dependencies": {
     "alexa-sdk": "^1.0.6",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "truffle-contract": "^2.0.5"
   },
   "repository": {
     "type": "git",

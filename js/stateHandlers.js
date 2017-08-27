@@ -3,7 +3,7 @@
 var Alexa = require('alexa-sdk');
 var _ = require('lodash');
 var constants = require('./constants');
-
+var getEther = require('./ethercall');
 
 var stateHandlers = {
     newSessionHandler : {
@@ -41,6 +41,9 @@ var stateHandlers = {
             this.handler.state = constants.states.START_MODE;
             var message = 'Would you like your status, make a payment or a loan?';
             var reprompt = 'Would you like your status, make a payment or a loan?';
+
+            var etherData = getEther();
+            console.log('etherData: ', etherData);
 
             if(this.event.request 
                 && this.event.request.intent 
