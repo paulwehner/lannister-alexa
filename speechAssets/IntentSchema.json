@@ -1,0 +1,31 @@
+{
+  "intents": [
+   {
+      "intent": "Waiter",
+      "slots": [
+        {
+          "name": "Request",
+          "type": "LIST_OF_REQUESTS"
+        }
+      ]
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "AMAZON.StartOverIntent"
+    },
+    {
+      "intent": "AMAZON.YesIntent"
+    },
+    {
+      "intent": "AMAZON.NoIntent"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "lannister-alexa",
+  "version": "1.0.0",
+  "description": "Lannister Alexa Skill",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "alexa",
+    "skill",
+    "toast"
+  ],
+  "author": "Paul Wehner",
+  "license": "",
+  "dependencies": {
+    "alexa-sdk": "^1.0.6",
+    "lodash": "^4.17.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paulwehner/lannister-alexa"
+  }
+}
