@@ -1,6 +1,6 @@
-var TruffleContract, Web3, data, loan, web3, web3Provider;
+var TruffleContract, HttpProvider, data, loan, web3Provider;
 
-Web3 = require('web3');
+HttpProvider = require('./web3/HttpProvider');
 
 if (typeof TruffleContract === "undefined" || TruffleContract === null) {
   TruffleContract = require('truffle-contract');
@@ -279,9 +279,7 @@ data = {
   "updated_at": 1503785472650
 };
 
-web3Provider = new Web3.providers.HttpProvider('https://ropsten.infura.io/IchlJ2mE8C5P5Ls6ckxq');
-
-web3 = new Web3(this.web3Provider);
+web3Provider = new HttpProvider('https://ropsten.infura.io/IchlJ2mE8C5P5Ls6ckxq');
 
 loan = TruffleContract(data);
 
@@ -289,32 +287,45 @@ loan.setProvider(web3Provider);
 
 loan = loan.at("0xda1dec4d71d4b584bb0106a1e98506c40e2a6f01");
 
-loan.nextPaymentDue().then(function(nextPaymentDue) {
-  return loan.calcInterest().then(function(interest) {
-    if (typeof onDataReady !== "undefined" && onDataReady !== null) {
-      return onDataReady({
-        nextPayment: new Date(nextPaymentDue * 1000),
-        interest: interest.toNumber()
-      });
+
+function getEther(callback){
+  var next = new Date()
+  var inter = 1
+
+  loan.nextPaymentDue().then(function(nextPaymentDue) {
+    if(nextPaymentDue && typeof nextPaymentDue !== 'undefined'){
+      next =  new Date(nextPaymentDue * 1000);    
     }
+    console.log('NEXT PAYMENT DUE CALCULATING: ', next)
+    return loan.calcInterest().then(function(interest) {
+      if(interest && typeof interest !== 'undefined'){
+        inter = (interest.toNumber() * 2678400 / 1000000000000000000)    
+      }
+      console.log('CALC INTEREST CALCULATING: ', inter)
+ 
+      var normalize = Math.round(inter * 600 * 100)/100
+      var human = next.toDateString()
+
+      var final = 'You have one outstanding loan, with an interest payment of '+normalize+' dollars, due on '+human+'.'
+
+      if(callback){
+        return callback({
+          nextPaymentDue: next,
+          interest: inter,
+          human: human,
+          normalize: normalize,
+          final: final
+        })
+      }
+
+    }).catch(function (e) {
+     console.log("Promise Rejected 1");
+     console.log(e)
+    });
+  }).catch(function (e) {
+   console.log("Promise Rejected 2");
+   console.log(e)
   });
-});
-
-var nextPayment = new Date()
-var interest = 1
-
-function onDataReady(data){
-  nextPayment = data.nextPayment
-  interest = datal.interest
 }
 
-function getEther(){
-  return {
-    nextPayment: nextPayment,
-    interest: interest
-  }
-}
-
-module.exports = {
-  getEther: getEther
-}
+module.exports = getEther
