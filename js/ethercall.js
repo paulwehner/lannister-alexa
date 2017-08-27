@@ -303,6 +303,7 @@ function getEther(callback){
       }
       console.log('CALC INTEREST CALCULATING: ', inter)
  
+      //multiple by for sake of demo 
       var normalize = Math.round(inter * 600 * 100)/100
       var human = next.toDateString()
 
