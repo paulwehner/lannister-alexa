@@ -3,7 +3,7 @@
 var Alexa = require('alexa-sdk');
 var _ = require('lodash');
 var constants = require('./constants');
-
+var getEther = require('./ethercall');
 
 var stateHandlers = {
     newSessionHandler : {
@@ -37,35 +37,49 @@ var stateHandlers = {
             this.emit(':responseReady');
         },
         'Waiter' : function () {
-            console.log('START_MODE --- Waiter');            
+            var self = this;
+            console.log('START_MODE --- Waiter --- getting Ether status');            
             this.handler.state = constants.states.START_MODE;
             var message = 'Would you like your status, make a payment or a loan?';
             var reprompt = 'Would you like your status, make a payment or a loan?';
 
-            if(this.event.request 
-                && this.event.request.intent 
-                && this.event.request.intent.slots 
-                && this.event.request.intent.slots.Request
-                && this.event.request.intent.slots.Request.value){
+            getEther(function(data){
+                console.log('etherData: ', data);
 
-                var request = this.event.request.intent.slots.Request.value;
+                message = 'You have one outstanding loan, that is due in 30 days.';
 
-                console.log('Request: ', request);
-
-                message = 'You have one outstanding loan, that is due in 30 days. <break time=".5s"/> Remember, a Lannister always pays his debts.';
-
-                if(request == 'status'){
-
+                if(data && data.final){
+                    message = data.final
                 }
-                else if(request == 'payment'){
-                    message = 'Your loan has been payed! No outstanding loans.';
+
+                if(self
+                    && self.event
+                    && self.event.request 
+                    && self.event.request.intent 
+                    && self.event.request.intent.slots 
+                    && self.event.request.intent.slots.Request
+                    && self.event.request.intent.slots.Request.value){
+
+                    var request = self.event.request.intent.slots.Request.value;
+
+                    console.log('Request: ', request);
+
+                    if(request == 'status'){
+
+                    }
+                    else if(request == 'payment'){
+                        message = 'Your loan has been payed! No outstanding loans.';
+                    }
+                    else if(request == 'loan'){
+                        message = 'You can borrow up to $23,000 based on your Ethereum assets. Go to www, dot, Lannister, dot, tech, to take out a loan.';
+                    }
                 }
-                else if(request == 'loan'){
-                    message = 'You can borrow up to $23,000 based on your Ethereum assets. Go to www, dot, Lannister, dot, tech, to take out a loan.';
-                }
-            }
-            this.response.speak(message);
-            this.emit(':responseReady');
+
+                message += ' <break time=".5s"/> Remember, a Lannister always pays his debts!'
+
+                self.response.speak(message);
+                self.emit(':responseReady');
+            });
         },
         'AMAZON.HelpIntent' : function () {
             console.log('START_MODE --- HelpIntent');
